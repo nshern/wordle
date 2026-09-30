@@ -104,7 +104,8 @@ func printScreen(screen [6]string) {
 
 func main() {
 
-	solution := strings.ToUpper(getRandomWord())
+	// solution := strings.ToUpper(getRandomWord())
+	solution := "SLATE"
 
 	screen := [6]string{
 		"1. _ _ _ _ _",
@@ -138,11 +139,6 @@ func main() {
 
 		if validated == true {
 
-			if input == solution {
-				fmt.Println("YOU WIN")
-				break
-			}
-
 			letters := strings.Split(input, "")
 			for index, letter := range input {
 				guessed_letter := string(letter)
@@ -157,6 +153,13 @@ func main() {
 			}
 
 			screen[try] = strconv.Itoa(try+1) + ". " + strings.Join(letters, " ")
+
+			if input == solution {
+				ClearScreen()
+				printScreen(screen)
+
+				break
+			}
 
 			try = try + 1
 
