@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand/v2"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,6 +13,36 @@ import (
 	"strings"
 	"time"
 )
+
+type Answer struct {
+	Solution string `json:"solution"`
+}
+
+func getWordleAnswer() string {
+
+	url := "https://www.nytimes.com/svc/wordle/v2/2026-10-05.json"
+
+	resp, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		panic(resp.Status)
+	}
+
+	var answer Answer
+
+	decoder := json.NewDecoder(resp.Body)
+
+	if err := decoder.Decode(&answer); err != nil {
+		panic(err)
+	}
+
+	return strings.Trim(answer.Solution, "")
+
+}
 
 func ClearScreen() {
 	if runtime.GOOS == "windows" {
@@ -95,17 +127,19 @@ func errorScreen(screen [6]string) {
 	time.Sleep(500 * time.Millisecond)
 }
 
+func printLogo() {
+	fmt.Println("\n  \033[1;42;30m W \033[0m \033[1;43;30m O \033[0m \033[1;42;30m R \033[0m \033[1;43;30m D \033[0m \033[1;42;30m L \033[0m \033[1;42;30m E \033[0m")
+}
+
 func printScreen(screen [6]string) {
-	//Print screen
+	printLogo()
+	fmt.Println()
 	for _, line := range screen {
-		fmt.Println(line)
+		fmt.Println("       " + line)
 	}
 }
 
-func main() {
-
-	// solution := strings.ToUpper(getRandomWord())
-	solution := "SLATE"
+func runGame(solution string) {
 
 	screen := [6]string{
 		"1. _ _ _ _ _",
@@ -121,14 +155,13 @@ func main() {
 	for true {
 
 		ClearScreen()
+		printScreen(screen)
 
 		if try == 6 {
 			fmt.Println("You loose!")
 			fmt.Println("Solution was " + solution)
 			break
 		}
-
-		printScreen(screen)
 
 		var input string
 		fmt.Println("")
@@ -168,6 +201,28 @@ func main() {
 			errorScreen(screen)
 
 		}
+	}
+}
+
+func main() {
+
+	mode := ""
+	if len(os.Args) > 1 {
+		mode = os.Args[1]
+	}
+
+	switch mode {
+	case "daily":
+		runGame(strings.ToUpper(getWordleAnswer()))
+	case "random":
+		runGame(strings.ToUpper(getRandomWord()))
+	default:
+		printLogo()
+		fmt.Println("\n  Six guesses. Five letters. Your move.")
+		fmt.Println("\n  \033[1;32mdaily\033[0m   Today's puzzle")
+		fmt.Println("  \033[1;33mrandom\033[0m  A fresh challenge")
+		fmt.Println("\n  \033[2mRun: wordle <daily|random>\033[0m")
+		fmt.Println()
 	}
 
 }
