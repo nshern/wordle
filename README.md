@@ -19,6 +19,40 @@ This creates the `wordle` binary in the repository directory. On Windows, build 
 
 Keep the cloned repository at its original location: the game reads `words.txt` and `valid-words.txt` from the source directory recorded during the build. The binary is not standalone; copying those files next to a relocated binary does not change where it looks for them.
 
+## Run from anywhere
+
+From the cloned repository, install the command:
+
+```sh
+go install .
+```
+
+By default, Go installs the binary into `$(go env GOPATH)/bin`. Add that directory to your PATH once using the instructions for your shell.
+
+For **zsh**:
+
+```sh
+echo 'export PATH="$PATH:$(go env GOPATH)/bin"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+For **fish**:
+
+```fish
+fish_add_path (go env GOPATH)/bin
+```
+
+If you have set a custom `GOBIN`, add that directory to your PATH instead.
+
+You can then play from any directory:
+
+```sh
+wordle random
+wordle daily
+```
+
+Keep the cloned repository in its original location so the installed command can find the word lists. Run `go install .` from the repository again after updating the code.
+
 ## Play
 
 Choose a mode:
