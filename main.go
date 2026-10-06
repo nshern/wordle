@@ -20,7 +20,9 @@ type Answer struct {
 
 func getWordleAnswer() string {
 
-	url := "https://www.nytimes.com/svc/wordle/v2/2026-10-05.json"
+	date := time.Now().Format("2006-01-02")
+
+	url := "https://www.nytimes.com/svc/wordle/v2/" + date + ".json"
 
 	resp, err := http.Get(url)
 	if err != nil {
