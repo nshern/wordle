@@ -2,8 +2,6 @@
 
 A terminal Wordle game written in Go. Six guesses. Five letters. Your move.
 
-The colored WORDLE logo stays above the centered guess rows throughout the game.
-
 ## Get the binary
 
 Install Git and Go 1.27.1 or newer (the version required by `go.mod`), then clone and build:

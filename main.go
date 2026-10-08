@@ -141,7 +141,20 @@ func printScreen(screen [6]string) {
 	}
 }
 
+func printDeadLetters(deadLetters map[string]bool) {
+
+	fmt.Println()
+
+	for letter := range deadLetters {
+		fmt.Print("\033[90m", letter, "\033[0m ")
+	}
+
+	fmt.Println()
+}
+
 func runGame(solution string) {
+
+	deadLetters := make(map[string]bool)
 
 	screen := [6]string{
 		"1. _ _ _ _ _",
@@ -158,6 +171,8 @@ func runGame(solution string) {
 
 		ClearScreen()
 		printScreen(screen)
+		printDeadLetters(deadLetters)
+		fmt.Println("")
 
 		if try == 6 {
 			fmt.Println("You loose!")
@@ -183,6 +198,8 @@ func runGame(solution string) {
 					letters[index] = "\033[1;32m" + guessed_letter + "\033[0m"
 				} else if strings.ContainsRune(solution, letter) {
 					letters[index] = "\033[1;33m" + guessed_letter + "\033[0m"
+				} else {
+					deadLetters[guessed_letter] = true
 				}
 
 			}
